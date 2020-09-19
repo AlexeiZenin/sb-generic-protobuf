@@ -17,7 +17,7 @@ public class ReportingWarehouseListener {
         this.warehouseSender = warehouseSender;
     }
 
-    @KafkaListener(topicPattern = ".*")
+    @KafkaListener(topicPattern = "prod\\..*")
     public void reportingWarehouseListener(ConsumerRecord<String, DynamicMessage> kafkaRecord) {
         DynamicMessage event = kafkaRecord.value();
         warehouseSender.sendToWarehouse(converter.toJson(event));
