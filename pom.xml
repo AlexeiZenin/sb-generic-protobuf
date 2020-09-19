@@ -30,6 +30,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>io.confluent</groupId>
+			<artifactId>kafka-protobuf-serializer</artifactId>
+			<version>5.5.1</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
@@ -61,6 +67,13 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>confluent</id>
+			<url>https://packages.confluent.io/maven/</url>
+		</repository>
+	</repositories>
 
 	<dependencyManagement>
 		<dependencies>
