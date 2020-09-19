@@ -69,7 +69,6 @@ public class GenericProtoApplicationTest {
   }
 
   private Message getEvent(int i) {
-    int readingSelection = i % (EnvironmentReadings.ReadingsCase.values().length - 1);
     final var reading =
         EnvironmentReadings.newBuilder()
             .setReadingId(generateID())
@@ -78,6 +77,8 @@ public class GenericProtoApplicationTest {
             .setLatitude(Math.random() * 70)
             .setTimeOfReading(fromMillis(currentTimeMillis()))
             .setElevationInMeters(random().nextInt(-500, 3000));
+
+    int readingSelection = i % (EnvironmentReadings.ReadingsCase.values().length - 1);
     switch (readingSelection) {
       case 0:
         reading.setTemperatureReading(
