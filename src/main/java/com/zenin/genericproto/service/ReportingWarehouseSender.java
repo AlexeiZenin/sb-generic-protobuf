@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class ReportingWarehouseSender {
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+  private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public void sendToWarehouse(String json) {
-        // purely for demo purposes
-        JsonObject parsed = gson.fromJson(json, JsonObject.class);
-        log.info("\n{}", gson.toJson(parsed));
-    }
+  public void sendToWarehouse(String json) {
+    // purely for demo purposes
+    JsonObject parsed = gson.fromJson(json, JsonObject.class);
+    log.info("\n{}", gson.toJson(parsed));
+  }
 }

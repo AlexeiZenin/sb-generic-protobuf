@@ -9,17 +9,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ReportingWarehouseListener {
-    private final GenericJsonConverter converter;
-    private final ReportingWarehouseSender warehouseSender;
+  private final GenericJsonConverter converter;
+  private final ReportingWarehouseSender warehouseSender;
 
-    public ReportingWarehouseListener(GenericJsonConverter converter, ReportingWarehouseSender warehouseSender) {
-        this.converter = converter;
-        this.warehouseSender = warehouseSender;
-    }
+  public ReportingWarehouseListener(
+      GenericJsonConverter converter, ReportingWarehouseSender warehouseSender) {
+    this.converter = converter;
+    this.warehouseSender = warehouseSender;
+  }
 
-    @KafkaListener(topicPattern = "prod\\..*")
-    public void processEvent(ConsumerRecord<String, DynamicMessage> kafkaRecord) {
-        DynamicMessage event = kafkaRecord.value();
-        warehouseSender.sendToWarehouse(converter.toJson(event));
-    }
+  @KafkaListener(topicPattern = "prod\\..*")
+  public void processEvent(ConsumerRecord<String, DynamicMessage> kafkaRecord) {
+    DynamicMessage event = kafkaRecord.value();
+    warehouseSender.sendToWarehouse(converter.toJson(event));
+  }
 }

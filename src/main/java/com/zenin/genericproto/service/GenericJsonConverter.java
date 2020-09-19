@@ -10,29 +10,28 @@ import java.util.Map;
 
 @Service
 public class GenericJsonConverter {
-    private final JsonFormat.Printer jsonMapper;
+  private final JsonFormat.Printer jsonMapper;
 
-    public GenericJsonConverter(JsonFormat.Printer jsonMapper) {
-        this.jsonMapper = jsonMapper;
+  public GenericJsonConverter(JsonFormat.Printer jsonMapper) {
+    this.jsonMapper = jsonMapper;
+  }
+
+  public String toJson(DynamicMessage event) {
+    final String json = convertEventToJson(event);
+    return enhanceJson(json, event.getAllFields());
+  }
+
+  private String enhanceJson(String json, Map<Descriptors.FieldDescriptor, Object> schema) {
+    return json;
+  }
+
+  private String convertEventToJson(DynamicMessage event) {
+    String json;
+    try {
+      json = jsonMapper.print(event);
+    } catch (InvalidProtocolBufferException e) {
+      throw new RuntimeException("Failed to convert event to JSON", e);
     }
-
-    public String toJson(DynamicMessage event) {
-        final String json = convertEventToJson(event);
-        return enhanceJson(json, event.getAllFields());
-    }
-
-    private String enhanceJson(String json, Map<Descriptors.FieldDescriptor, Object> schema) {
-        return json;
-    }
-
-    private String convertEventToJson(DynamicMessage event) {
-        String json;
-        try {
-            json = jsonMapper.print(event);
-        } catch (InvalidProtocolBufferException e) {
-            throw new RuntimeException("Failed to convert event to JSON", e);
-        }
-        return json;
-    }
-
+    return json;
+  }
 }

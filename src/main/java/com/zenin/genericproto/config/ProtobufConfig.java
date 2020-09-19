@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ProtobufConfig {
 
-    @Bean
-    JsonFormat.Printer printer() {
-        return JsonFormat.printer().omittingInsignificantWhitespace();
-    }
+  @Bean
+  JsonFormat.Printer printer() {
+    return JsonFormat.printer().omittingInsignificantWhitespace();
+  }
 }
