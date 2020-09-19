@@ -20,6 +20,8 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.ProducerFactory;
 
+import java.util.Map;
+
 @TestConfiguration
 @Slf4j
 public class MockRegistryBeans {
@@ -40,7 +42,9 @@ public class MockRegistryBeans {
     final DefaultKafkaConsumerFactory<String, DynamicMessage> consumerFactory =
         (DefaultKafkaConsumerFactory<String, DynamicMessage>)
             kafkaAutoConfiguration.kafkaConsumerFactory(customizers);
-    consumerFactory.setValueDeserializer(new KafkaProtobufDeserializer<>(mockRegistry()));
+    final var valueDeserializer = new KafkaProtobufDeserializer<DynamicMessage>(mockRegistry());
+    valueDeserializer.configure(Map.of("schema.registry.url", "http://mock.com:8081"), false);
+    consumerFactory.setValueDeserializer(valueDeserializer);
     consumerFactory.setKeyDeserializer(new StringDeserializer());
     return consumerFactory;
   }
@@ -51,7 +55,9 @@ public class MockRegistryBeans {
     final DefaultKafkaProducerFactory<String, Message> producerFactory =
         (DefaultKafkaProducerFactory<String, Message>)
             kafkaAutoConfiguration.kafkaProducerFactory(customizers);
-    producerFactory.setValueSerializer(new KafkaProtobufSerializer<>(mockRegistry()));
+    final var valueSerializer = new KafkaProtobufSerializer<Message>(mockRegistry());
+    valueSerializer.configure(Map.of("schema.registry.url", "http://mock.com:8081"), false);
+    producerFactory.setValueSerializer(valueSerializer);
     producerFactory.setKeySerializer(new StringSerializer());
     return producerFactory;
   }

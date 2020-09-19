@@ -66,6 +66,12 @@
 			<artifactId>kafka</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>3.11.4</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -103,12 +109,11 @@
 						<goals>
 							<goal>run</goal>
 						</goals>
+						<configuration>
+							<includeStdTypes>true</includeStdTypes>
+						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
