@@ -24,7 +24,7 @@ public class UnixEnhancer implements ITimestampEnhancer {
 
   void setUnixTime(JsonObject jsonObject, String timestampLocation, DynamicMessage event) {
     final var entry = genericTools.getJsonElementEntry(timestampLocation, jsonObject);
-    final Timestamp timestamp = genericTools.getTimestamp(event, timestampLocation);
+    final var timestamp = genericTools.getTimestamp(event, timestampLocation);
     entry.setValue(new JsonPrimitive(timestamp.getSeconds()));
   }
 }

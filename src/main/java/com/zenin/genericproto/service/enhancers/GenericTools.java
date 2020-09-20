@@ -2,7 +2,7 @@ package com.zenin.genericproto.service.enhancers;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Timestamp;
@@ -12,10 +12,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type;
+
 @Service
 public class GenericTools {
 
-  public Map.Entry<String, JsonElement> getJsonElementEntry(String path, JsonObject jsonObject) {
+  public Map.Entry<String, JsonElement> getJsonElementEntry(
+      final String path, final JsonObject jsonObject) {
     String[] split = path.split("\\.");
     if (split.length == 0) {
       split = new String[] {path};
@@ -69,12 +72,12 @@ public class GenericTools {
     return res;
   }
 
-  public Set<String> getTimestampPaths(Set<Descriptors.FieldDescriptor> schema, String basePath) {
+  public Set<String> getTimestampPaths(final Set<FieldDescriptor> schema, final String basePath) {
     Set<String> paths = new HashSet<String>();
 
-    for (Descriptors.FieldDescriptor fieldDescriptor : schema) {
+    for (FieldDescriptor fieldDescriptor : schema) {
       final var type = fieldDescriptor.getType();
-      if (fieldDescriptor.getType().equals(Descriptors.FieldDescriptor.Type.MESSAGE)
+      if (fieldDescriptor.getType().equals(Type.MESSAGE)
           && fieldDescriptor
               .getMessageType()
               .getFullName()
@@ -85,11 +88,10 @@ public class GenericTools {
                 : basePath + "." + fieldDescriptor.getName());
       } else {
         // continue the DFS
-        if (type.equals(Descriptors.FieldDescriptor.Type.MESSAGE)) {
+        if (type.equals(Type.MESSAGE)) {
           paths.addAll(
               getTimestampPaths(
-                  new HashSet<Descriptors.FieldDescriptor>(
-                      fieldDescriptor.getMessageType().getFields()),
+                  new HashSet<>(fieldDescriptor.getMessageType().getFields()),
                   basePath.equals("")
                       ? fieldDescriptor.getName()
                       : basePath + "." + fieldDescriptor.getName()));

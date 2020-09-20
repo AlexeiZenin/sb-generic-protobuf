@@ -25,7 +25,7 @@ public class ProtoPreservingEnhancer implements ITimestampEnhancer {
   void setProtoStructureTime(
       final JsonObject jsonObject, final String timestampLocation, final DynamicMessage event) {
     final var entry = genericTools.getJsonElementEntry(timestampLocation, jsonObject);
-    final Timestamp timestamp = genericTools.getTimestamp(event, timestampLocation);
+    final var timestamp = genericTools.getTimestamp(event, timestampLocation);
 
     JsonObject jsonTimestamp = new JsonObject();
     jsonTimestamp.addProperty("seconds", timestamp.getSeconds());
