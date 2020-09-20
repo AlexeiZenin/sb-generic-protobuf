@@ -9,6 +9,6 @@ public class ProtobufConfig {
 
   @Bean
   JsonFormat.Printer printer() {
-    return JsonFormat.printer().omittingInsignificantWhitespace();
+    return JsonFormat.printer().preservingProtoFieldNames().omittingInsignificantWhitespace();
   }
 }
