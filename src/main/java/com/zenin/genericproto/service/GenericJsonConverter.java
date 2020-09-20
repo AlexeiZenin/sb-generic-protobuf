@@ -8,8 +8,11 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type;
 
 @Service
 public class GenericJsonConverter {
@@ -27,7 +30,7 @@ public class GenericJsonConverter {
   }
 
   private JsonObject enhanceJson(final JsonObject jsonObject, final DynamicMessage event) {
-    Set<String> timestampLocations = getTimestampPaths(event.getAllFields());
+    Set<String> timestampLocations = getTimestampPaths(event.getAllFields().keySet(), "");
     timestampLocations.forEach(location -> setUnixTime(jsonObject, location, event));
     return jsonObject;
   }
@@ -92,8 +95,34 @@ public class GenericJsonConverter {
     return res;
   }
 
-  private Set<String> getTimestampPaths(Map<Descriptors.FieldDescriptor, Object> schema) {
-    return Set.of("time_of_reading");
+  Set<String> getTimestampPaths(Set<Descriptors.FieldDescriptor> schema, String basePath) {
+    Set<String> paths = new HashSet<>();
+
+    for (Descriptors.FieldDescriptor fieldDescriptor : schema) {
+      final var type = fieldDescriptor.getType();
+      if (fieldDescriptor.getType().equals(Type.MESSAGE)
+          && fieldDescriptor
+              .getMessageType()
+              .getFullName()
+              .equals(Timestamp.getDescriptor().getFullName())) {
+        paths.add(
+            basePath.equals("")
+                ? fieldDescriptor.getName()
+                : basePath + "." + fieldDescriptor.getName());
+      } else {
+        // continue the DFS
+        if (type.equals(Type.MESSAGE)) {
+          paths.addAll(
+              getTimestampPaths(
+                  new HashSet<>(fieldDescriptor.getMessageType().getFields()),
+                  basePath.equals("")
+                      ? fieldDescriptor.getName()
+                      : basePath + "." + fieldDescriptor.getName()));
+        }
+      }
+    }
+
+    return paths;
   }
 
   private String convertEventToJson(DynamicMessage event) {

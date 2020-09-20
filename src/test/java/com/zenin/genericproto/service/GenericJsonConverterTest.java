@@ -74,4 +74,21 @@ class GenericJsonConverterTest {
     log.info(oneofTime.toString());
     assertTrue(oneofTime.equals(oneof));
   }
+
+  @Test
+  void getTimestampPaths() {
+    final var topLevel = Timestamps.fromMillis(123);
+    final var nested = Timestamps.fromMillis(459);
+    final var oneof = Timestamps.fromMillis(899);
+    NestedTimestamp nestedTimestamp =
+        NestedTimestamp.newBuilder()
+            .setTimeOfReading(topLevel)
+            .setNested(Nested.newBuilder().setNestedTime(nested).build())
+            .setTemperatureReading(TempartureReading.newBuilder().setNestedTime(oneof).build())
+            .build();
+    DynamicMessage msg = DynamicMessage.newBuilder(nestedTimestamp).build();
+
+    final var paths = genericJsonConverter.getTimestampPaths(msg.getAllFields().keySet(), "");
+    log.info(paths.toString());
+  }
 }
