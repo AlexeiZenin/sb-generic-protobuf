@@ -5,5 +5,7 @@ spring:
       group-id: "reporting-warehouse"
 
 zenin:
+  kafka:
+    topic-pattern: "prod\\..*"
   json:
     timestampMode: PRESERVE_PROTO
