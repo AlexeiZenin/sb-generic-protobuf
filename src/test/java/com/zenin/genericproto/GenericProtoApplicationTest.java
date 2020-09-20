@@ -3,7 +3,6 @@ package com.zenin.genericproto;
 import com.google.protobuf.Message;
 import com.zenin.genericproto.test.KafkaContainerSBAware;
 import com.zenin.genericproto.test.MockRegistryBeans;
-import com.zenin.models.EnvironmentReadingsOuterClass;
 import com.zenin.models.EnvironmentReadingsOuterClass.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;

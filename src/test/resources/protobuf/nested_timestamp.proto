@@ -3,27 +3,28 @@ syntax = "proto3";
 package com.zenin.models;
 
 option java_package = "com.zenin.models";
-option go_package = "zenin.com/models";
 
 import "google/protobuf/timestamp.proto";
 
-message EnvironmentReadings {
-  string reading_id = 1;
+message NestedTimestamp {
   google.protobuf.Timestamp time_of_reading = 2;
-  string device_id = 4;
-  double latitude = 5;
-  double longitude = 6;
-  double elevation_in_meters = 7;
 
   oneof readings {
     TempartureReading temperature_reading = 8;
     PrecipitationReading precipitation_reading = 9;
     PHReading ph_reading = 10;
   }
+
+  Nested nested = 11;
+}
+
+message Nested {
+  google.protobuf.Timestamp nested_time = 2;
 }
 
 message TempartureReading {
   double temperature_in_celsius = 1;
+  google.protobuf.Timestamp nested_time = 2;
 }
 
 message PrecipitationReading {

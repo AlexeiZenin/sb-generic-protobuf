@@ -61,17 +61,24 @@ public class GenericJsonConverter {
     return res;
   }
 
-  private Timestamp getTimestamp(DynamicMessage event, String path) {
+  Timestamp getTimestamp(final DynamicMessage event, final String path) {
     String[] split = path.split("\\.");
     if (split.length == 0) {
       split = new String[] {path};
     }
+
     Timestamp res = null;
+    DynamicMessage intermediate = event;
     for (int i = 0; i < split.length; i++) {
-      DynamicMessage timestampDynamic =
-          (DynamicMessage) event.getField(event.getDescriptorForType().findFieldByName(split[i]));
-      res = parseToTimestamp(timestampDynamic);
+      intermediate =
+          (DynamicMessage)
+              intermediate.getField(intermediate.getDescriptorForType().findFieldByName(split[i]));
+      if (i == split.length - 1) {
+        res = parseToTimestamp(intermediate);
+        break;
+      }
     }
+
     return res;
   }
 

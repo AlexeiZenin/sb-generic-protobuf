@@ -3,12 +3,17 @@ package com.zenin.genericproto.service;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.util.Timestamps;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static com.zenin.models.NestedTimestampOuterClass.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Slf4j
 class GenericJsonConverterTest {
 
   private GenericJsonConverter genericJsonConverter;
@@ -42,5 +47,31 @@ class GenericJsonConverterTest {
     assertTrue(entryAfterMutation.getValue().isJsonPrimitive());
     assertTrue(entryAfterMutation.getKey().equals("b"));
     assertTrue(entryAfterMutation.getValue().getAsLong() == 57L);
+  }
+
+  @Test
+  void getTimestamp() {
+    final var topLevel = Timestamps.fromMillis(123);
+    final var nested = Timestamps.fromMillis(459);
+    final var oneof = Timestamps.fromMillis(899);
+    NestedTimestamp nestedTimestamp =
+        NestedTimestamp.newBuilder()
+            .setTimeOfReading(topLevel)
+            .setNested(Nested.newBuilder().setNestedTime(nested).build())
+            .setTemperatureReading(TempartureReading.newBuilder().setNestedTime(oneof).build())
+            .build();
+    DynamicMessage msg = DynamicMessage.newBuilder(nestedTimestamp).build();
+
+    final var topTime = genericJsonConverter.getTimestamp(msg, "time_of_reading");
+    log.info(topTime.toString());
+    assertTrue(topTime.equals(topTime));
+
+    final var nestedTime = genericJsonConverter.getTimestamp(msg, "nested.nested_time");
+    log.info(nestedTime.toString());
+    assertTrue(nestedTime.equals(nested));
+
+    final var oneofTime = genericJsonConverter.getTimestamp(msg, "temperature_reading.nested_time");
+    log.info(oneofTime.toString());
+    assertTrue(oneofTime.equals(oneof));
   }
 }
