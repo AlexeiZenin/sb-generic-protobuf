@@ -1,11 +1,10 @@
 package com.zenin.genericproto.service;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.protobuf.DynamicMessage;
-import com.google.protobuf.util.JsonFormat;
 import com.google.protobuf.util.Timestamps;
+import com.zenin.genericproto.service.enhancers.GenericTools;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,13 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Slf4j
 class GenericJsonConverterTest {
 
-  private GenericJsonConverter genericJsonConverter;
+  private GenericTools genericJsonConverter;
 
   @BeforeEach
   public void setup() {
-    genericJsonConverter =
-        new GenericJsonConverter(
-            JsonFormat.printer().omittingInsignificantWhitespace(), new GsonBuilder());
+    genericJsonConverter = new GenericTools();
   }
 
   @Test
@@ -35,14 +32,14 @@ class GenericJsonConverterTest {
 
     top.add("test", aObject);
 
-    final var entry = genericJsonConverter.getJsonElementAtPath("test.a.b", top);
+    final var entry = genericJsonConverter.getJsonElementEntry("test.a.b", top);
     assertTrue(entry.getValue().isJsonPrimitive());
     assertTrue(entry.getKey().equals("b"));
     assertTrue(entry.getValue().getAsInt() == 123);
 
     entry.setValue(new JsonPrimitive(57L));
 
-    final var entryAfterMutation = genericJsonConverter.getJsonElementAtPath("test.a.b", top);
+    final var entryAfterMutation = genericJsonConverter.getJsonElementEntry("test.a.b", top);
 
     assertTrue(entryAfterMutation.getValue().isJsonPrimitive());
     assertTrue(entryAfterMutation.getKey().equals("b"));
