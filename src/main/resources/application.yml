@@ -8,4 +8,4 @@ zenin:
   kafka:
     topic-pattern: "prod\\..*"
   json:
-    timestampMode: PRESERVE_PROTO
+    timestampMode: UNIX

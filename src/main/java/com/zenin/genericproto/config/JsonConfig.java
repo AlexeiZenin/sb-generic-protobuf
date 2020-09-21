@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 public class JsonConfig implements InitializingBean {
   public static final String PREFIX = "zenin.json";
   public static final String TIMESTAMP_MODE = "timestampMode";
-  @NotNull private TimestampMode timestampMode = TimestampMode.UNIX;
+  @NotNull private TimestampMode timestampMode;
 
   @Bean
   public GsonBuilder gsonBuilder() {
