@@ -32,7 +32,7 @@ import static java.lang.System.currentTimeMillis;
 @Slf4j
 public class GenericProtoApplicationTest {
   public static final int NUM_PARTITIONS = 2;
-  public static final String TOPIC = "prod.orders";
+  public static final String TOPIC = "prod.readings";
   @Container public static KafkaContainer kafka = new KafkaContainerSBAware();
 
   @Configuration
