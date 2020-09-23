@@ -37,28 +37,24 @@ public class MockRegistryBeans {
   }
 
   @Bean
-  ConsumerFactory<?, ?> mockedConsumerFactory(
-      ObjectProvider<DefaultKafkaConsumerFactoryCustomizer> customizers) {
-    final DefaultKafkaConsumerFactory<String, DynamicMessage> consumerFactory =
-        (DefaultKafkaConsumerFactory<String, DynamicMessage>)
-            kafkaAutoConfiguration.kafkaConsumerFactory(customizers);
-    final var valueDeserializer = new KafkaProtobufDeserializer<DynamicMessage>(mockRegistry());
-    valueDeserializer.configure(Map.of("schema.registry.url", "http://mock.com:8081"), false);
-    consumerFactory.setValueDeserializer(valueDeserializer);
-    consumerFactory.setKeyDeserializer(new StringDeserializer());
-    return consumerFactory;
+  DefaultKafkaConsumerFactoryCustomizer mockedConsumerFactory() {
+    return consumerFactory -> {
+      var typedFactory = (DefaultKafkaConsumerFactory<String, DynamicMessage>) consumerFactory;
+      final var valueDeserializer = new KafkaProtobufDeserializer<DynamicMessage>(mockRegistry());
+      valueDeserializer.configure(Map.of("schema.registry.url", "http://mock.com:8081"), false);
+      typedFactory.setValueDeserializer(valueDeserializer);
+      typedFactory.setKeyDeserializer(new StringDeserializer());
+    };
   }
 
   @Bean
-  ProducerFactory<?, ?> mockedProducerFactory(
-      ObjectProvider<DefaultKafkaProducerFactoryCustomizer> customizers) {
-    final DefaultKafkaProducerFactory<String, Message> producerFactory =
-        (DefaultKafkaProducerFactory<String, Message>)
-            kafkaAutoConfiguration.kafkaProducerFactory(customizers);
-    final var valueSerializer = new KafkaProtobufSerializer<Message>(mockRegistry());
-    valueSerializer.configure(Map.of("schema.registry.url", "http://mock.com:8081"), false);
-    producerFactory.setValueSerializer(valueSerializer);
-    producerFactory.setKeySerializer(new StringSerializer());
-    return producerFactory;
+  DefaultKafkaProducerFactoryCustomizer mockedProducerFactory() {
+    return producerFactory -> {
+      final var typedFactory = (DefaultKafkaProducerFactory<String, Message>) producerFactory;
+      final var valueSerializer = new KafkaProtobufSerializer<>(mockRegistry());
+      valueSerializer.configure(Map.of("schema.registry.url", "http://mock.com:8081"), false);
+      typedFactory.setValueSerializer(valueSerializer);
+      typedFactory.setKeySerializer(new StringSerializer());
+    };
   }
 }
